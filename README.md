@@ -1,3 +1,3 @@
 # Votex
 
-A vdecentralised voting platform
+A decentralised voting platform
