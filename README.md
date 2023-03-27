@@ -27,4 +27,4 @@ A full stack decentralized application for voting
 
 ## Demo
 
-[live demo](https://fanciful-parfait-babe1a.netlify.app/)
+[live demo](https://dainty-cuchufli-d71a5e.netlify.app)

@@ -5,7 +5,7 @@ export const Voters = ({VotersList}) => {
 
   return (
 <>
-<h1> Voters </h1>
+<h5> Voters </h5>
 {VotersList.map((voters) => (
     
     <ListGroup >

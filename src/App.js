@@ -12,7 +12,7 @@ import "./App.css";
 require("dotenv").config({ path: ".env" });
 
 function App() {
-  const [address, setAddress] = useState(null);
+  const [address, setAddress] = useState("");
   const getAPIKey = () => {
     return process.env.REACT_APP_ALCHEMY_API_KEY;
   };
@@ -89,7 +89,7 @@ function App() {
         //  if user wallet is not connected display cover page
         <Cover
           name="Decentralized Voting Platform For Governments and Organizations"
-          coverImg="https://repository-images.githubusercontent.com/473491878/f987f3bc-1c6b-49fb-868c-c8d47f07435f"
+          coverImg="https://th.bing.com/th/id/R.ca273a4780744dfb3e9d7d9fe1b7fb07?rik=tKSd7zWqEf%2fmKw&pid=ImgRaw&r=0"
           connect={connectWallet}
         />
       )}

@@ -61,7 +61,7 @@ export const addCandidate = async (
 
     // settting a new Candidate
     await votingContract.methods
-      .setCandidate(candidateAddress, url)
+      .setCandidate(candidateAddress, url, name)
       .send({ from: address });
   } catch (error) {
     console.log("Error uploading file: ", error);
@@ -123,6 +123,25 @@ export const getVotersList = async (votingContract) => {
     const votersList = await votingContract.methods.getVotersList().call();
 
     return votersList;
+  } catch (e) {
+    console.log({ e });
+  }
+};
+
+export const getLeaderboard = async (votingContract) => {
+  try {
+    const leaderBoard = await votingContract.methods.getLeaderboard().call();
+    return leaderBoard;
+   
+  } catch (e) {
+    console.log({ e });
+  }
+};
+export const fetchAdmin = async (votingContract) => {
+  try {
+    const adminAddress = await votingContract.methods.getAdmin().call();
+
+    return adminAddress;
   } catch (e) {
     console.log({ e });
   }

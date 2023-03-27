@@ -5,10 +5,12 @@ import AddCandidates from "./addCandidate";
 import GiveVotingRight from "./giveRight";
 import CandidateCard from "./Candidates";
 import Loader from ".././ui/Loader";
-import {getCandidate, addCandidate, givetVotingRight, voting, getVotersList, uploadImage} from "../../utils/voters"
+import {getCandidate, addCandidate, givetVotingRight, voting, getVotersList, uploadImage, getLeaderboard, fetchAdmin} from "../../utils/voters"
 import { NotificationSuccess, NotificationError } from ".././ui/Notifications";
 import { Row } from "react-bootstrap";
 import { Voters } from "./Voters";
+import { Leaderboard } from "./Leaderboard";
+import Web3 from "web3";
 
 const CandidateList = ({ votingContract, address, name }) => {
 
@@ -18,6 +20,9 @@ const CandidateList = ({ votingContract, address, name }) => {
   const [candidates, setCandidates] = useState([]);
   const [voters, setVoters] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [leaderboard, setLeaderBoard] = useState([]);
+  const [admin, setAdmin] = useState("")
+  const [checksumAddress, setChecksumAddress] = useState([]);
   
 
 
@@ -50,6 +55,35 @@ const CandidateList = ({ votingContract, address, name }) => {
     }
   }, [getVotersList]);
 
+  const getLeaderBoard = useCallback (async () => {
+    try {
+      setLoading(true);
+      const allCandidates = await getLeaderboard(votingContract);
+      if(!allCandidates) return
+      setLeaderBoard(allCandidates)
+    } catch (error) {
+      console.log({ error });
+    } finally {
+      setLoading(false);
+    }
+  }, [getLeaderboard]);
+
+  const fetchContractAdmin = useCallback(async () => {
+  try{
+    // get the address of the admin
+    const _address = await fetchAdmin(votingContract);
+    setAdmin(Web3.utils.toChecksumAddress(_address));
+    setChecksumAddress(Web3.utils.toChecksumAddress(address))
+    console.log(_address)
+    console.log(address)
+  }catch (error) {
+    console.log({ error });
+    toast(<NotificationError text="Failed to fetch admin." />);
+  }
+  }, [fetchAdmin]);
+
+  
+
   const AddCandidate = async (name, age, image, description, candidateAddress) => {
     try {
       setLoading(true);
@@ -62,6 +96,7 @@ const CandidateList = ({ votingContract, address, name }) => {
       setLoading(false);
       getCandidates();
       getVoters();
+      getLeaderBoard();
     }
   };
 
@@ -78,6 +113,7 @@ const CandidateList = ({ votingContract, address, name }) => {
       setLoading(false);
       getCandidates();
       getVoters();
+      getLeaderBoard();
     }
   };
 
@@ -94,6 +130,8 @@ const CandidateList = ({ votingContract, address, name }) => {
       setLoading(false);
       getCandidates();
       getVoters();
+      getLeaderBoard();
+     
     }
   };
 
@@ -103,12 +141,13 @@ const CandidateList = ({ votingContract, address, name }) => {
       if (address) {
         getCandidates();
         getVoters();
-      
+        getLeaderBoard();
+        fetchContractAdmin();
       }
     } catch (error) {
       console.log({ error });
     }
-  }, [address, getCandidates, getVoters]);
+  }, [address, getCandidates, getVoters, getLeaderBoard, fetchContractAdmin]);
   if (address) {
     return (
       <>
@@ -117,8 +156,17 @@ const CandidateList = ({ votingContract, address, name }) => {
             <div className="d-flex justify-content-between align-items-center mb-4">
               <h1 className="fs-4 fw-bold mb-0">{name}</h1>
 
-                  <AddCandidates save={AddCandidate} uploadImage={uploadImage}/>
-                  <GiveVotingRight save={giveVotingright} address={address}/>
+              {admin === checksumAddress ? (
+                <AddCandidates save={AddCandidate} admin={admin} address ={address} uploadImage={uploadImage}/>
+              ) : null
+              }
+
+               {admin === checksumAddress ? (
+                <GiveVotingRight save={giveVotingright} admin={admin} address={address}/>
+              ) : null
+              }
+                  
+                  
             
             </div>
 
@@ -136,6 +184,7 @@ const CandidateList = ({ votingContract, address, name }) => {
                   />
               ))}
             </Row>
+            <Leaderboard leaderboard={leaderboard} />
           </>
         ) : (
           <Loader />
