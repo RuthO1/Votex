@@ -30,3 +30,4 @@ A full stack decentralized application for voting
 [live demo](https://dainty-cuchufli-d71a5e.netlify.app)
 
 
+ownership transfered to your test address 0xa1B94ef0f24d7F4fd02285EFcb9202E6C6EC655B
